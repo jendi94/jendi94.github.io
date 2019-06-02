@@ -5,6 +5,137 @@
     <title>Title</title>
 </head>
 <body>
-    <p>Hello World!</p>
+
+<canvas id="myCanvas" width="800" height="800" style="border:2px solid #000000">
+    Your browser does not support the canvas element.
+</canvas>
+<script>
+    class SnakeSegment {
+        turningPoint = [];
+        constructor(x, y, dir) {
+            this.x = x;
+            this.y = y;
+            this.dir = dir;
+        }
+    }
+
+    class Snake {
+        snakeSegments = [];
+        constructor() {
+            this.snakeSegments[0] = new SnakeSegment(80, 50, 0);
+            this.snakeSegments.push(new SnakeSegment(70, 50, 0));
+            this.snakeSegments.push(new SnakeSegment(60, 50, 0));
+            this.snakeSegments.push(new SnakeSegment(50, 50, 0));
+            this.snakeSegments.push(new SnakeSegment(40, 50, 0));
+            this.snakeSegments.push(new SnakeSegment(30, 50, 0));
+            this.snakeSegments.push(new SnakeSegment(20, 50, 0));
+            this.canTurn = true;
+        }
+    }
+
+    class TurningPoint {
+        constructor(x, y, dir) {
+            this.x = x;
+            this.y = y;
+            this.dir = dir;
+        }
+    }
+
+    document.addEventListener('keydown', function onEvent(event) {
+        if (event.key === "ArrowRight" && snake.canTurn) {
+            snake.snakeSegments[0].dir = 0;
+            snake.canTurn = false;
+            snake.snakeSegments.forEach((segment) => {
+                if (snake.snakeSegments.indexOf(segment) !== 0) {
+                    segment.turningPoint.push(new TurningPoint(snake.snakeSegments[0].x, snake.snakeSegments[0].y, 0));
+                }
+            });
+            console.log(snake.dir);
+        } else if (event.key === "ArrowLeft" && snake.canTurn) {
+            snake.snakeSegments[0].dir = 1;
+            snake.canTurn = false;
+            snake.snakeSegments.forEach((segment) => {
+                if (snake.snakeSegments.indexOf(segment) !== 0) {
+                    segment.turningPoint.push(new TurningPoint(snake.snakeSegments[0].x, snake.snakeSegments[0].y, 1));
+                }
+            });
+            console.log(snake.dir);
+        } else if (event.key === "ArrowDown" && snake.canTurn) {
+            snake.snakeSegments[0].dir = 2;
+            snake.canTurn = false;
+            snake.snakeSegments.forEach((segment) => {
+                if (snake.snakeSegments.indexOf(segment) !== 0) {
+                    segment.turningPoint.push(new TurningPoint(snake.snakeSegments[0].x, snake.snakeSegments[0].y, 2));
+                }
+            });
+        } else if (event.key === "ArrowUp" && snake.canTurn) {
+            snake.snakeSegments[0].dir = 3;
+            snake.canTurn = false;
+            snake.snakeSegments.forEach((segment) => {
+                if (snake.snakeSegments.indexOf(segment)) {
+                    segment.turningPoint.push(new TurningPoint(snake.snakeSegments[0].x, snake.snakeSegments[0].y, 3));
+                }
+            });
+        }
+    });
+
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+
+    const snake = new Snake();
+
+    console.log(snake.x);
+
+    function drawSnake() {
+        ctx.fillStyle = "#000000";
+        snake.snakeSegments.forEach((segment) => {
+           ctx.fillRect(segment.x, segment.y, 10, 10);
+        });
+    }
+
+    function drawMap() {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, 800, 800);
+    }
+
+    function changeSnakePosition() {
+        snake.snakeSegments.forEach((segment) => {
+            if (segment.turningPoint.length) {
+                if (segment.x === segment.turningPoint[0].x &&
+                    segment.y === segment.turningPoint[0].y) {
+                    segment.dir = segment.turningPoint[0].dir;
+                    segment.turningPoint.shift();
+                }
+            }
+            if (segment.dir === 0) segment.x += 10;
+            else if (segment.dir === 1) segment.x -= 10;
+            else if (segment.dir === 2) segment.y += 10;
+            else segment.y -= 10;
+        });
+    }
+
+    function unlockSnakeTurn() {
+        snake.canTurn = true;
+    }
+
+    var time = 0;
+    drawSnake();
+    function gameLoop() {
+        time++;
+        if (time % 10 === 0) {
+            changeSnakePosition();
+            drawMap();
+            drawSnake();
+            unlockSnakeTurn();
+        }
+            requestAnimationFrame(gameLoop)
+    }
+    requestAnimationFrame(gameLoop)
+
+
+
+
+</script>
+
 </body>
 </html>
