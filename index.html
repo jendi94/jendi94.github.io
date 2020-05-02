@@ -12,13 +12,17 @@
     <script>
         const canvas = document.getElementById("myCanvas");
         const ctx = canvas.getContext('2d', { alpha: false });
-        const entitySize = prompt("Please choose entity size, larger than 1 is suggested: ");
+        var entitySize = prompt("Please choose entity size, larger than 1 is suggested: ");
         var mapSize = parseInt(prompt("Please choose map size: "), 10);
         if (mapSize > 900) mapSize = 900;
         const fps = prompt("Please choose refresh interval in ms: ");
         const arraySize = (mapSize/entitySize);
-        canvas.width = mapSize;
-        canvas.height = mapSize;
+
+        const rescale = 1000/mapSize;
+        entitySize = entitySize * rescale;
+
+        canvas.width = 900;
+        canvas.height = 900;
         let array;
 
         function init() {
