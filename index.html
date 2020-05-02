@@ -12,8 +12,9 @@
     <script>
         const canvas = document.getElementById("myCanvas");
         const ctx = canvas.getContext('2d', { alpha: false });
-        const entitySize = prompt("Please choose entity size(larger than 2): ");
+        const entitySize = prompt("Please choose entity size, larger than 1 is suggested: ");
         const mapSize = prompt("Please choose map size: ");
+        const fps = prompt("Please choose refresh interval in ms: ");
         const arraySize = (mapSize/entitySize);
         canvas.width = mapSize;
         canvas.height = mapSize;
@@ -139,10 +140,9 @@
                 }
             }
             array = newArray;
-            window.requestAnimationFrame(game);
         }
         init();
-        window.requestAnimationFrame(game);
+        setInterval(game, parseInt(fps, 10));
     </script>
 </body>
 </html> 
