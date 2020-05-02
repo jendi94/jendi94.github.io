@@ -13,7 +13,8 @@
         const canvas = document.getElementById("myCanvas");
         const ctx = canvas.getContext('2d', { alpha: false });
         const entitySize = prompt("Please choose entity size, larger than 1 is suggested: ");
-        const mapSize = prompt("Please choose map size: ");
+        var mapSize = parseInt(prompt("Please choose map size: "), 10);
+        if (mapSize > 900) mapSize = 900;
         const fps = prompt("Please choose refresh interval in ms: ");
         const arraySize = (mapSize/entitySize);
         canvas.width = mapSize;
