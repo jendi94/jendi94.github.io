@@ -5,149 +5,194 @@
     <title>Title</title>
 </head>
 <body>
-    <div style = "text-align:center;">
-        <canvas id="myCanvas" style="border:1px solid #c3c3c3;">
-        </canvas>
-    </div>
-    <script>
-        const canvas = document.getElementById("myCanvas");
-        const ctx = canvas.getContext('2d', { alpha: false });
-        var entitySize = prompt("Please choose entity size, larger than 1 is suggested: ");
-        var mapSize = parseInt(prompt("Please choose map size: "), 10);
-        if (mapSize > 900) mapSize = 900;
-        const fps = prompt("Please choose refresh interval in ms: ");
-        const arraySize = (mapSize/entitySize);
+<div style="text-align:center;">
+    <canvas id="myCanvas" style="border:1px solid #c3c3c3;">
+    </canvas>
+</div>
+<script>
+        var isPetro = confirm("Run Petro's exercise randomizer?")
 
-        const rescale = 1000/mapSize;
-        entitySize = entitySize * rescale;
+        if (isPetro) {
+            const keys = Array("C", "G", "D", "A", "F", "Bb", "Eb");
+            const intervals = Array("1", "2", "3", "4", "5", "6", "7");
+            const comebacks = Array("PH", "TH", "3", "4", "5");
 
-        canvas.width = 900;
-        canvas.height = 900;
-        let array;
+            function clearCanvas() {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              var w = canvas.width;
+              canvas.width = 1;
+              canvas.width = w;
+            }
 
-        function init() {
-            array = [];
-            for (let x = 0; x < arraySize; x++) {
-                array[x] = [];
-                for (let y = 0; y < arraySize; y++) {
-                    array[x][y] = Math.floor(Math.random() * 2);
+            function createCombination() {
+                return keys[Math.floor(Math.random()*keys.length)]
+                + " "
+                + intervals[Math.floor(Math.random()*intervals.length)]
+                + " "
+                + comebacks[Math.floor(Math.random()*comebacks.length)];
+            }
+
+            function spacebarHandler(e) {
+                if(e.key == " ") {
+                    clearCanvas();
+                    ctx.font = "75px Comic Sans MS";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.fillText(createCombination(), canvas.width/2, canvas.height/2)
                 }
             }
-        }
 
-        function checkCellState(cellX, cellY) {
-            let count = 0;
-            if (cellX === 0 && cellY === 0) {
-                if (array[cellX+1][cellY] === 1) count++;
-                if (array[cellX][cellY+1] === 1) count++;
-                if (array[cellX+1][cellY+1] === 1) count++;
+            document.addEventListener("keydown", spacebarHandler, false);
 
-                return count;
-            }
-            if (cellX === 0 && cellY === array.length-1) {
-                if (array[cellX][cellY-1] === 1) count++;
-                if (array[cellX+1][cellY] === 1) count++;
-                if (array[cellX+1][cellY-1] === 1) count++;
+            const canvas = document.getElementById("myCanvas");
+            const ctx = canvas.getContext('2d', { alpha: false });
+            ctx.font = "75px Comic Sans MS";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText(createCombination(), canvas.width/2, canvas.height/2)
 
-                return count;
-            }
-            if (cellX === array.length-1 && cellY === 0) {
-                if (array[cellX-1][cellY] === 1) count++;
-                if (array[cellX-1][cellY+1] === 1) count++;
-                if (array[cellX][cellY+1] === 1) count++;
 
-                return count;
-            }
-            if (cellX === array.length-1 && cellY === array.length-1) {
-                if (array[cellX-1][cellY] === 1) count++;
-                if (array[cellX][cellY-1] === 1) count++;
-                if (array[cellX-1][cellY-1] === 1) count++;
+        } else {
+            const canvas = document.getElementById("myCanvas");
+            const ctx = canvas.getContext('2d', { alpha: false });
+            var entitySize = prompt("Please choose entity size, larger than 1 is suggested: ");
+            var mapSize = parseInt(prompt("Please choose map size: "), 10);
+            if (mapSize > 900) mapSize = 900;
+            const fps = prompt("Please choose refresh interval in ms: ");
+            const arraySize = (mapSize/entitySize);
 
-                return count;
-            }
+            const rescale = 1000/mapSize;
+            entitySize = entitySize * rescale;
 
-            if (cellX === 0) {
-                if (array[cellX][cellY-1] === 1) count++;
-                if (array[cellX][cellY+1] === 1) count++;
-                if (array[cellX+1][cellY-1] === 1) count++;
-                if (array[cellX+1][cellY] === 1) count++;
-                if (array[cellX+1][cellY+1] === 1) count++;
+            canvas.width = 900;
+            canvas.height = 900;
+            let array;
 
-                return count;
-            }
-
-            if (cellX === array.length-1) {
-                if (array[cellX-1][cellY-1] === 1) count++;
-                if (array[cellX-1][cellY] === 1) count++;
-                if (array[cellX-1][cellY+1] === 1) count++;
-                if (array[cellX][cellY-1] === 1) count++;
-                if (array[cellX][cellY+1] === 1) count++;
-
-                return count;
-            }
-
-            if (cellY === 0) {
-                if (array[cellX-1][cellY] === 1) count++;
-                if (array[cellX-1][cellY+1] === 1) count++;
-                if (array[cellX][cellY+1] === 1) count++;
-                if (array[cellX+1][cellY] === 1) count++;
-                if (array[cellX+1][cellY+1] === 1) count++;
-
-                return count;
-            }
-
-            if (cellY === array.length-1) {
-                if (array[cellX-1][cellY-1] === 1) count++;
-                if (array[cellX-1][cellY] === 1) count++;
-                if (array[cellX][cellY-1] === 1) count++;
-                if (array[cellX+1][cellY-1] === 1) count++;
-                if (array[cellX+1][cellY] === 1) count++;
-            }
-
-            if (array[cellX-1][cellY-1] === 1) count++;
-            if (array[cellX-1][cellY] === 1) count++;
-            if (array[cellX-1][cellY+1] === 1) count++;
-            if (array[cellX][cellY-1] === 1) count++;
-            if (array[cellX][cellY+1] === 1) count++;
-            if (array[cellX+1][cellY-1] === 1) count++;
-            if (array[cellX+1][cellY] === 1) count++;
-            if (array[cellX+1][cellY+1] === 1) count++;
-
-            return count;
-        }
-
-        function draw() {
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            for (let x = 0; x < array.length; x++) {
-                for (let y = 0; y < array.length; y++) {
-                    if (array[x][y] === 1) {
-                        ctx.fillStyle = "#FFFFFF";
-                        ctx.fillRect(entitySize*x, entitySize*y, entitySize, entitySize);
+            function init() {
+                array = [];
+                for (let x = 0; x < arraySize; x++) {
+                    array[x] = [];
+                    for (let y = 0; y < arraySize; y++) {
+                        array[x][y] = Math.floor(Math.random() * 2);
                     }
                 }
             }
-        }
-        function game() {
-            draw();
-            let newArray = [];
-            for (let x = 0; x < array.length; x++) {
-                newArray[x] = [];
-                for (let y = 0; y < array.length; y++) {
-                    let count = checkCellState(x, y);
-                    if (array[x][y] === 1) {
-                        if (count === 2 || count === 3) newArray[x][y] = 1;
-                        else newArray[x][y] = 0;
-                    } else {
-                        if (count === 3) newArray[x][y] = 1;
-                        else newArray[x][y] = 0;
+
+            function checkCellState(cellX, cellY) {
+                let count = 0;
+                if (cellX === 0 && cellY === 0) {
+                    if (array[cellX+1][cellY] === 1) count++;
+                    if (array[cellX][cellY+1] === 1) count++;
+                    if (array[cellX+1][cellY+1] === 1) count++;
+
+                    return count;
+                }
+                if (cellX === 0 && cellY === array.length-1) {
+                    if (array[cellX][cellY-1] === 1) count++;
+                    if (array[cellX+1][cellY] === 1) count++;
+                    if (array[cellX+1][cellY-1] === 1) count++;
+
+                    return count;
+                }
+                if (cellX === array.length-1 && cellY === 0) {
+                    if (array[cellX-1][cellY] === 1) count++;
+                    if (array[cellX-1][cellY+1] === 1) count++;
+                    if (array[cellX][cellY+1] === 1) count++;
+
+                    return count;
+                }
+                if (cellX === array.length-1 && cellY === array.length-1) {
+                    if (array[cellX-1][cellY] === 1) count++;
+                    if (array[cellX][cellY-1] === 1) count++;
+                    if (array[cellX-1][cellY-1] === 1) count++;
+
+                    return count;
+                }
+
+                if (cellX === 0) {
+                    if (array[cellX][cellY-1] === 1) count++;
+                    if (array[cellX][cellY+1] === 1) count++;
+                    if (array[cellX+1][cellY-1] === 1) count++;
+                    if (array[cellX+1][cellY] === 1) count++;
+                    if (array[cellX+1][cellY+1] === 1) count++;
+
+                    return count;
+                }
+
+                if (cellX === array.length-1) {
+                    if (array[cellX-1][cellY-1] === 1) count++;
+                    if (array[cellX-1][cellY] === 1) count++;
+                    if (array[cellX-1][cellY+1] === 1) count++;
+                    if (array[cellX][cellY-1] === 1) count++;
+                    if (array[cellX][cellY+1] === 1) count++;
+
+                    return count;
+                }
+
+                if (cellY === 0) {
+                    if (array[cellX-1][cellY] === 1) count++;
+                    if (array[cellX-1][cellY+1] === 1) count++;
+                    if (array[cellX][cellY+1] === 1) count++;
+                    if (array[cellX+1][cellY] === 1) count++;
+                    if (array[cellX+1][cellY+1] === 1) count++;
+
+                    return count;
+                }
+
+                if (cellY === array.length-1) {
+                    if (array[cellX-1][cellY-1] === 1) count++;
+                    if (array[cellX-1][cellY] === 1) count++;
+                    if (array[cellX][cellY-1] === 1) count++;
+                    if (array[cellX+1][cellY-1] === 1) count++;
+                    if (array[cellX+1][cellY] === 1) count++;
+                }
+
+                if (array[cellX-1][cellY-1] === 1) count++;
+                if (array[cellX-1][cellY] === 1) count++;
+                if (array[cellX-1][cellY+1] === 1) count++;
+                if (array[cellX][cellY-1] === 1) count++;
+                if (array[cellX][cellY+1] === 1) count++;
+                if (array[cellX+1][cellY-1] === 1) count++;
+                if (array[cellX+1][cellY] === 1) count++;
+                if (array[cellX+1][cellY+1] === 1) count++;
+
+                return count;
+            }
+
+            function draw() {
+                ctx.fillStyle = "#000000";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                for (let x = 0; x < array.length; x++) {
+                    for (let y = 0; y < array.length; y++) {
+                        if (array[x][y] === 1) {
+                            ctx.fillStyle = "#FFFFFF";
+                            ctx.fillRect(entitySize*x, entitySize*y, entitySize, entitySize);
+                        }
                     }
                 }
             }
-            array = newArray;
+            function game() {
+                draw();
+                let newArray = [];
+                for (let x = 0; x < array.length; x++) {
+                    newArray[x] = [];
+                    for (let y = 0; y < array.length; y++) {
+                        let count = checkCellState(x, y);
+                        if (array[x][y] === 1) {
+                            if (count === 2 || count === 3) newArray[x][y] = 1;
+                            else newArray[x][y] = 0;
+                        } else {
+                            if (count === 3) newArray[x][y] = 1;
+                            else newArray[x][y] = 0;
+                        }
+                    }
+                }
+                array = newArray;
+            }
+            init();
+            setInterval(game, parseInt(fps, 10));
         }
-        init();
-        setInterval(game, parseInt(fps, 10));
-    </script>
+
+</script>
 </body>
 </html> 
